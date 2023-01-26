@@ -10,6 +10,9 @@
  * @return {ListNode}
  */
 
+//  1 --> 2 --> 3 --> null
+//  null <-- 1 <-- 2 <-- 3
+
 var reverseList = function(head) {
   // declare previous & current pointers
   let previous = null, current = head, temp = null;
