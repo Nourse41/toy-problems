@@ -59,7 +59,7 @@ var threeSum = function(nums, target = 0) {
     };
 
     // create pointers
-    let left = i+1, right = nums.length - 1;
+    let left = i + 1, right = nums.length - 1;
 
     // loop over input array while left smaller than right indexes
     while (left < right) {
