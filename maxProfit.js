@@ -26,33 +26,9 @@ Constraints:
 var maxProfit = function(prices) {
   let left = 0, right = 1, maxSum = 0;
 
-  while (left < prices.length - 1) {
-
-    if (right > prices.length - 1) {
-      left++
-      right = left + 1;
-     }
-
-    let currSum = prices[right] - prices[left];
-
-    if (currSum > maxSum) {
-      maxSum = currSum;
-      right++;
-    } else {
-      right++
-    }
-  }
-  return maxSum;
-};
-
-
-
-var smartMaxProfit = function(prices) {
-  let left = 0, right = 1, maxSum = 0;
   while (right < prices.length) {
     if (prices[left] < prices[right]) {
-      let currSum = prices[right] - prices[left];
-      maxSum = (maxSum < currSum) ? currSum : maxSum;
+      maxSum = Math.max(prices[right] - prices[left], maxSum)
     } else {
       left = right;
     }
@@ -60,5 +36,7 @@ var smartMaxProfit = function(prices) {
   }
   return maxSum;
 };
+
+
 
 console.log(maxProfit([2,1,4]));
