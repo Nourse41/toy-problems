@@ -38,6 +38,7 @@ var maxArea = function(height) {
 
   while (left < right) {
     let currVolume = (right - left) * Math.min(height[left], height[right])
+    
     maxVolume = Math.max(currVolume, maxVolume);
 
     if (height[left] === height[right]) {
