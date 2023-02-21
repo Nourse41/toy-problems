@@ -1,17 +1,11 @@
-/**
- * @param {string} s
- * @return {boolean}
- */
-
-
- /*
+/*
   Inputs: takes in a string of chars
   Output: returns true if the string is a palindrome
   Constraints: could be long string and only consists of chars
   Edge Cases:
         - could be an empty string
         - could contain non-alpa chars and lower/upper
- */
+*/
 
 const fs = require('fs');
 const input = process.argv[2];
@@ -45,15 +39,13 @@ const isPalindrome = function(s) {
     return true;
 };
 
-
 reader.on('error', (error) => {
   console.log('error parsing input', error)
 })
 
 reader.on('data', (chunk) => {
   const data = chunk.toString();
-  // console.log(isPalindrome(data));
-  isPalindrome(data);
+  console.log(isPalindrome(data));
 })
 
 
