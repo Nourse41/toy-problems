@@ -1,0 +1,87 @@
+Please complete the following JSON to HTML Javascript exercise
+
+Write your code in a single Javascript file, upload it via https://transfer.sh/, and enter the generated link to your file below.
+
+Goal: Evaluate your ability to understand JSON and HTML syntax and write simple Javascript programs to transform data.
+
+# JSON to HTML
+
+## Intro
+
+Let's say we want to save the state of an HTML hierarchy. One way we might do that would be to convert an HTML hierarchy into a JSON tree. If we did, we might design a simple specification for HTML in JSON which would be a tree of nodes, each specifying their tag, attributes, and children.
+
+Below is one way to define this node, which we will call an `HTMLNode`
+
+``` javascript
+/***
+* HtmlNode
+* @property {string} tag - Html Tag Name
+* @property {object} attrs - (optional) Map of attribute names to values
+* @property {array} children - (optional) Array of HtmlNodes and / or strings
+*
+* Note: optional properties may be null or undefined
+***/
+```
+
+This is a very simple example of an HTMLNode with children, given our specifications.
+
+``` json
+{
+"tag": "body",
+"attrs": { "id": "app" },
+"children": [{ "tag": "div" }, "text to render"]
+}
+```
+
+This is the above JSON, rendered to formatted HTML
+
+``` html
+<body id="app">
+<div />
+text to render
+</body>
+```
+
+Now that we have this specification for HTML in JSON, what if we wanted to write a function that takes in JSON of the above specification and returns a string representing formatted HTML?
+
+## Objective
+
+**Write a function that takes in a JSON tree defined by the specification above and outputs a string of formatted HTML.**
+
+Keep in mind that the example in the above specification does not include an exhaustive version of the shape of JSON that can be handed into your function as an argument.
+
+The format of your function should be of the form:
+
+``` javascript
+const jsonToHtml = (json /*[, may take in other arguments if needed]*/) => {
+// ...convert json to a returned string containing formatted HTML
+}
+```
+
+The format of the HTML should be as follows:
+
+- Every non-root line should be continually indented by two spaces per indented line
+- Each child should be on a new line (except for the exceptions below)
+- If a node has no children, use a self-closing tag
+- If a node has only one child, and that child is a string, keep the child in line with the tags
+- Do not indent attributes
+
+Here is an example of what some formatted HTML adhering to the above would look like:
+
+``` html
+<body id="app">
+<div id="i-have-no-children" class="a-pretty-class"/>
+<section>
+<div style="background: blue">
+<span>single child of text</span>
+</div>
+<div style="background: blue">
+<span>
+1st child of text
+2nd child of text
+<img src="http://someimageurl.com/image.png" />
+</span>
+</div>
+</section>
+</body>
+```

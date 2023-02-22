@@ -1,7 +1,5 @@
-console.log(process.argv);
 const fs = require('fs');
 const filepath = process.argv[2];
-
 const reader = fs.createReadStream(filepath)
 
 const removeQuotes = (s) => {
@@ -44,3 +42,5 @@ reader.on('data', (chunk) => {
   })
   console.table(purchases);
 })
+
+
