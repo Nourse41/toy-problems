@@ -35,66 +35,61 @@ let example = {
   "attrs": { "id": "app", "class": "blue"},
   "children": [{"tag": "div"}, "text to render"]
 }
-let simpleSample2 = {
-  "tag": "div",
-  "attrs": {},
-  "children": ["I'm a div!"]
-}
-
-let simpleSample = {
-  "tag": "body",
-  "attrs": {},
-  "children": [{"tag": "div"}, "I'm the body!", simpleSample2]
-}
-
-
 let example4 = {
   "tag": "div",
   "attrs": {"class": "div"},
-  "children": ["I'm a div!"]
+  "children": ["I'm a div!", {"tag": "div"}]
 };
-
 let example2 = {
   "tag": "body",
-  "attrs": { "id": "2ndBody"},
+  "attrs": { "id": "body"},
   "children": [example4]
 };
-
 let example3 = {
-  "tag": "body",
+  "tag": "span",
   "attrs": { "id": "app", "class": "blue"},
-  "children": [{"tag": "div"}, "text to render", example2]
+  "children": [{"tag": "div"}, "I'm the span", example2]
 };
-
-//TODO opening and body have extra spacing (4spaces)
+let simpleSample3 = {
+  "tag": "span",
+  "attrs": {"class": "span"},
+  "children": ["I an in-line span!"]
+};
+let simpleSample2 = {
+  "tag": "div",
+  "attrs": {"class": "div", "class": "blue"},
+  "children": ["I come second!"]
+};
+let simpleSample = {
+  "tag": "body",
+  "attrs": {"id": "body"},
+  "children": ["I'm the body!", simpleSample3, example3, simpleSample2 ]
+};
 
 const jsonToHtml = (json, depth = 0) => {
   let attributes = [];
-  let opening = ``;
+  let opening = `<${json.tag}>\n`;
   let body = ``;
   let closing =  ``;
   let spacing = `  `.repeat(depth);
+
 
   if (typeof json === `string`) {
     return spacing + json + `\n`;
   }
 
-  if (json.attrs) {
+  if (json.attrs && Object.keys(json.attrs).length) {
     for (var key in json.attrs) {
       let attribute = `${key}="${json.attrs[key]}"`;
       attributes.push(attribute);
     }
     opening = `<${json.tag} ${attributes.join(` `)}>\n`;
-  } else {
-    opening = `<${json.tag}>\n`;
   }
 
   if (json.children && json.children.length) {
     closing = (depth === 0) ? `</${json.tag}>` : `</${json.tag}>\n`;
-
     for (var i = 0; i < json.children.length; i++) {
       let chunk = jsonToHtml(json.children[i], depth + 1);
-
       if (chunk[chunk.indexOf(`>`) - 1] === `/`) {
         opening = opening.slice(0, -1) + chunk.slice(chunk.indexOf(`<`));
       } else {
@@ -102,15 +97,28 @@ const jsonToHtml = (json, depth = 0) => {
       }
     }
   } else {
-    opening = `${opening.slice(0, -2)} />\n`;
+    opening = opening.replace(`>\n`, ` />\n`);
   }
 
-  if (body.length) {
-    //! extra 2 spaced added here!!
-    opening = spacing + opening;
+  if (body.length !== 0 && body.includes(`<`) === false) {
+    opening = opening.replace(`\n`, ``);
+    body = body.replace(`\n`, ``);
+    while (body[0] === ' ') { body = body.substring(1)}
+    return spacing + opening + body + closing;
+
+  } else if (body.length !== 0) {
+    //! extra 2 spaces added here!!
+    let bodySpacing = 0, pointer = 0;
     body = spacing + body;
+    while (body[pointer] === ' ') {bodySpacing++; pointer++;}
+    while (bodySpacing > spacing.length + 2) {
+      bodySpacing--;
+      body = body.substring(1);
+    }
+    opening = spacing + opening;
     closing = spacing + closing;
     return opening + body + closing;
+
   } else {
     opening = spacing + opening;
     closing = (closing.length !== 0) ? spacing + closing : closing;
