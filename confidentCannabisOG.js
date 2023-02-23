@@ -1,8 +1,4 @@
 /*
-
-*/
-
-/*
 HmtlNode
 @prop {string} tag = HTML tag name
 @prop {object} attributes - (optional) Map of attribute names to values
@@ -35,28 +31,16 @@ let example = {
   "attrs": { "id": "app", "class": "blue"},
   "children": [{"tag": "div"}, "text to render"]
 }
-let simpleSample2 = {
-  "tag": "div",
-  "attrs": {},
-  "children": ["I'm a div!"]
-}
-
-let simpleSample = {
-  "tag": "body",
-  "attrs": {},
-  "children": [{"tag": "div"}, "I'm the body!", simpleSample2]
-}
-
 
 let example4 = {
   "tag": "div",
   "attrs": {"class": "div"},
   "children": ["I'm a div!"]
-};
+}
 
 let example2 = {
   "tag": "body",
-  "attrs": { "id": "2ndBody"},
+  "attrs": { "id": "app"},
   "children": [example4]
 };
 
@@ -66,19 +50,19 @@ let example3 = {
   "children": [{"tag": "div"}, "text to render", example2]
 };
 
-//TODO opening and body have extra spacing (4spaces)
-
-const jsonToHtml = (json, depth = 0) => {
+const jsonToHtml = (json) => {
+  //! declare variables
   let attributes = [];
-  let opening = ``;
-  let body = ``;
-  let closing =  ``;
-  let spacing = `  `.repeat(depth);
+  let opening = ""
+  let closing =  "";
+  let body = "";
 
-  if (typeof json === `string`) {
-    return spacing + json + `\n`;
+  //! recursive break case
+  if (typeof json === 'string') {
+    return json + '\n';
   }
 
+  //! create tag attributes & adjust opening (optional)
   if (json.attrs) {
     for (var key in json.attrs) {
       let attribute = `${key}="${json.attrs[key]}"`;
@@ -86,38 +70,31 @@ const jsonToHtml = (json, depth = 0) => {
     }
     opening = `<${json.tag} ${attributes.join(` `)}>\n`;
   } else {
-    opening = `<${json.tag}>\n`;
+    opening = `<${json.tag}>\n`
   }
 
   if (json.children && json.children.length) {
-    closing = (depth === 0) ? `</${json.tag}>` : `</${json.tag}>\n`;
+    closing = `</${json.tag}>`
 
+    //! handle children recursively
     for (var i = 0; i < json.children.length; i++) {
-      let chunk = jsonToHtml(json.children[i], depth + 1);
-
-      if (chunk[chunk.indexOf(`>`) - 1] === `/`) {
-        opening = opening.slice(0, -1) + chunk.slice(chunk.indexOf(`<`));
+      // check if tag should be in line to handle single children
+      let chunk = jsonToHtml(json.children[i]);
+      if (chunk[1] === '/') {
+        opening = opening.slice(0, -1) + chunk
       } else {
-        body += chunk;
+        body += `  ${chunk}`
       }
     }
+  // if no children, create self closing tag
   } else {
-    opening = `${opening.slice(0, -2)} />\n`;
+    opening = `</${opening.slice(1)}`;
   }
 
-  if (body.length) {
-    //! extra 2 spaced added here!!
-    opening = spacing + opening;
-    body = spacing + body;
-    closing = spacing + closing;
-    return opening + body + closing;
-  } else {
-    opening = spacing + opening;
-    closing = (closing.length !== 0) ? spacing + closing : closing;
-    return opening + closing;
-  }
+  // return html string
+  return body.length ? opening + body + closing : opening + closing;
 };
 
-console.log(jsonToHtml(simpleSample));
+console.log(jsonToHtml(example3));
 
-module.exports = jsonToHtml;
+module.exports = jsonToHtml
