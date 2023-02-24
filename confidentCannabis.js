@@ -68,7 +68,7 @@ const jsonToHtml = (json, depth = 0) => {
   let body = ``;
   let closing =  ``;
   let spacing = `  `.repeat(depth);
-  let result = '';
+  let result = ``;
 
   if (typeof json === `string`) {
     return spacing + json + `\n`;
@@ -95,16 +95,16 @@ const jsonToHtml = (json, depth = 0) => {
     opening = opening.replace(`>\n`, ` />\n`);
   }
 
-  if (body.length !== 0 && body.includes(`<`) === false) {
+  if (body.length > 0 && body.includes(`<`) === false) {
     opening = opening.replace(`\n`, ``);
     body = body.replace(`\n`, ``);
-    while (body[0] === ' ') {body = body.substring(1)}
+    while (body[0] === ` `) {body = body.substring(1)}
     result = spacing + opening + body + closing;
 
-  } else if (body.length !== 0) {
+  } else if (body.length > 0) {
     let spacingCount = 0, pointer = 0;
     body = spacing + body;
-    while (body[pointer] === ' ') {spacingCount++; pointer++;}
+    while (body[pointer] === ` `) {spacingCount++; pointer++;}
     while (spacingCount > spacing.length + 2) {spacingCount--; body = body.substring(1);
     }
     opening = spacing + opening;
