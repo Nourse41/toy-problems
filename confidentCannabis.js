@@ -1,8 +1,4 @@
 /*
-
-*/
-
-/*
 HmtlNode
 @prop {string} tag = HTML tag name
 @prop {object} attributes - (optional) Map of attribute names to values
@@ -41,8 +37,8 @@ let example4 = {
   "children": ["I'm a div!", {"tag": "div"}]
 };
 let example2 = {
-  "tag": "body",
-  "attrs": { "id": "body"},
+  "tag": "p",
+  "attrs": { "id": "paragraph"},
   "children": [example4]
 };
 let example3 = {
@@ -63,7 +59,7 @@ let simpleSample2 = {
 let simpleSample = {
   "tag": "body",
   "attrs": {"id": "body"},
-  "children": ["I'm the body!", simpleSample3, example3, simpleSample2 ]
+  "children": ["I'm the body!", simpleSample3, example3, simpleSample2, example]
 };
 
 const jsonToHtml = (json, depth = 0) => {
@@ -72,7 +68,7 @@ const jsonToHtml = (json, depth = 0) => {
   let body = ``;
   let closing =  ``;
   let spacing = `  `.repeat(depth);
-
+  let result = '';
 
   if (typeof json === `string`) {
     return spacing + json + `\n`;
@@ -80,8 +76,7 @@ const jsonToHtml = (json, depth = 0) => {
 
   if (json.attrs && Object.keys(json.attrs).length) {
     for (var key in json.attrs) {
-      let attribute = `${key}="${json.attrs[key]}"`;
-      attributes.push(attribute);
+      attributes.push(`${key}="${json.attrs[key]}"`);
     }
     opening = `<${json.tag} ${attributes.join(` `)}>\n`;
   }
@@ -91,7 +86,7 @@ const jsonToHtml = (json, depth = 0) => {
     for (var i = 0; i < json.children.length; i++) {
       let chunk = jsonToHtml(json.children[i], depth + 1);
       if (chunk[chunk.indexOf(`>`) - 1] === `/`) {
-        opening = opening.slice(0, -1) + chunk.slice(chunk.indexOf(`<`));
+        opening = opening.slice(0, -1) + ` ` + chunk.slice(chunk.indexOf(`<`));
       } else {
         body += chunk;
       }
@@ -103,27 +98,26 @@ const jsonToHtml = (json, depth = 0) => {
   if (body.length !== 0 && body.includes(`<`) === false) {
     opening = opening.replace(`\n`, ``);
     body = body.replace(`\n`, ``);
-    while (body[0] === ' ') { body = body.substring(1)}
-    return spacing + opening + body + closing;
+    while (body[0] === ' ') {body = body.substring(1)}
+    result = spacing + opening + body + closing;
 
   } else if (body.length !== 0) {
-    //! extra 2 spaces added here!!
-    let bodySpacing = 0, pointer = 0;
+    let spacingCount = 0, pointer = 0;
     body = spacing + body;
-    while (body[pointer] === ' ') {bodySpacing++; pointer++;}
-    while (bodySpacing > spacing.length + 2) {
-      bodySpacing--;
-      body = body.substring(1);
+    while (body[pointer] === ' ') {spacingCount++; pointer++;}
+    while (spacingCount > spacing.length + 2) {spacingCount--; body = body.substring(1);
     }
     opening = spacing + opening;
     closing = spacing + closing;
-    return opening + body + closing;
+    result = opening + body + closing;
 
   } else {
     opening = spacing + opening;
     closing = (closing.length !== 0) ? spacing + closing : closing;
-    return opening + closing;
+    result = opening + closing;
   }
+
+  return result;
 };
 
 console.log(jsonToHtml(simpleSample));

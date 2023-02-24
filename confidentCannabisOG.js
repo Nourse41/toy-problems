@@ -31,23 +31,35 @@ let example = {
   "attrs": { "id": "app", "class": "blue"},
   "children": [{"tag": "div"}, "text to render"]
 }
-
 let example4 = {
   "tag": "div",
   "attrs": {"class": "div"},
-  "children": ["I'm a div!"]
-}
-
+  "children": ["I'm a div!", {"tag": "div"}]
+};
 let example2 = {
-  "tag": "body",
-  "attrs": { "id": "app"},
+  "tag": "p",
+  "attrs": { "id": "paragraph"},
   "children": [example4]
 };
-
 let example3 = {
-  "tag": "body",
+  "tag": "span",
   "attrs": { "id": "app", "class": "blue"},
-  "children": [{"tag": "div"}, "text to render", example2]
+  "children": [{"tag": "div"}, "I'm the span", example2]
+};
+let simpleSample3 = {
+  "tag": "span",
+  "attrs": {"class": "span"},
+  "children": ["I an in-line span!"]
+};
+let simpleSample2 = {
+  "tag": "div",
+  "attrs": {"class": "div", "class": "blue"},
+  "children": ["I come second!"]
+};
+let simpleSample = {
+  "tag": "body",
+  "attrs": {"id": "body"},
+  "children": ["I'm the body!", simpleSample3, example3, simpleSample2, example]
 };
 
 const jsonToHtml = (json) => {
@@ -95,6 +107,6 @@ const jsonToHtml = (json) => {
   return body.length ? opening + body + closing : opening + closing;
 };
 
-console.log(jsonToHtml(example3));
+console.log(jsonToHtml(simpleSample));
 
 module.exports = jsonToHtml
