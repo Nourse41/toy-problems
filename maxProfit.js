@@ -39,4 +39,4 @@ var maxProfit = function(prices) {
 
 
 
-console.log(maxProfit([2,1,4]));
+console.log(maxProfit([2,1,6,4,7,1,9]));
